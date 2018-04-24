@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/zpc10/CATB_Standard_Business_System#readme",
   "dependencies": {
-    "hapi": "^17.3.1"
+    "hapi": "^17.3.1",
+    "inert": "^5.1.0"
   }
 }

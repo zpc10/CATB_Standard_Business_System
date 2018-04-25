@@ -1,13 +1,18 @@
 {
   "server": {
     "host": "127.0.0.1",
-    "port": 3000
+    "port": 8000
   },
   "database": {
     "host": "127.0.0.1",
     "port": 27017,
-    "db": "YourDataBaseName",
-    "username": "YourDataBaseUserName",
-    "password": "YourDatabasePassword"
+    "db": "CATB",
+    "username": "catb",
+    "password": "catb"
+  },
+  "key": {
+    "privateKey": "CATB_CATB",
+    "tokenExpiration": 3600,
+    "tokenExpirationDescription": "1 hour"
   }
 }

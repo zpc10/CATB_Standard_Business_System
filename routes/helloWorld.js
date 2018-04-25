@@ -1,18 +1,36 @@
-let index={
+const jwt = require('jsonwebtoken');
+const config = require('../config/config');
+const _privateKey = config.key.privateKey;
+const _tokenExpiration = config.key.tokenExpiration;
+
+let index = {
     method: 'GET',
     path: '/',
-    handler: function(request, h){
-        const response = h.response({text: 'You used a Token!'});
+    config: {auth: false},
+    handler: function (request, h) {
+
+        //jwt生成token
+        const token = jwt.sign({
+            name: 123
+        }, _privateKey, {
+            expiresIn: _tokenExpiration //秒到期时间
+        });
+        console.log(token);
+        const response = h.response({text: token});
+        response.header("token",token);
+
         return response;
 
     }
 };
-let hello={
-    method: ['GET', 'POST'],
-    path: '/hello/{user?}',
+let hello = {
+    method: 'GET', path: '/restricted', config: {auth: 'jwt'},
     handler: function (request, h) {
+        const response = h.response({text: 'You used a Token!'});
 
-        return  {hello: 'world'}
+
+        response.header("Authorization", request.headers.authorization);
+        return response;
     }
 };
-module.exports=[index,hello];
+module.exports = [index, hello];

@@ -1,5 +1,3 @@
 module.exports = [
-    {
-        register:require('inert')
-    }
+    { plugin: require('hapi-auth-jwt2')}
 ];

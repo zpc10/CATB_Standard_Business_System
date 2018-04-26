@@ -1,7 +1,7 @@
 const server = require('./tools/server');
 const config = require('./config/config');
 const plugins = require('./config/config_plugin');
-
+require("./tools/database");
 const _privateKey = config.key.privateKey;
 // bring your own validation function
 const validate = async function (decoded, request) {
@@ -17,9 +17,7 @@ const validate = async function (decoded, request) {
 
 // Start the server
 async function start() {
-
     try {
-
 
         await server.register(plugins);
 

@@ -1,6 +1,6 @@
 let user_model = require("../models/user_model");
 
-function create(user) {
+function create_user(user) {
     user_model.create(user, function (err) {
         if (!err) {
             console.log("插入成功~~~");
@@ -8,7 +8,7 @@ function create(user) {
     });
 }
 
-function getByID(_id) {
+function get_user_by_id(_id) {
     user_model.findOne({_id: _id}, function (err, doc) {
         if (!err) {
 
@@ -22,7 +22,7 @@ function getByID(_id) {
 }
 
 
-function getAll() {
+function get_user_all() {
 
     return new Promise((resolve, reject) => {
         //初始化promise的状态为pending---->初始化状态
@@ -46,8 +46,8 @@ function getAll() {
 
 module.exports = {
 
-    create: create,
-    getByID: getByID,
-    getAll: getAll
+    create_user: create_user,
+    get_user_all: get_user_all,
+    get_user_by_id: get_user_by_id
 
 };

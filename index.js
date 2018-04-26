@@ -1,8 +1,8 @@
 const server = require('./tools/server');
 const config = require('./config/config');
-const _privateKey = config.key.privateKey;
 const plugins = require('./config/config_plugin');
 
+const _privateKey = config.key.privateKey;
 // bring your own validation function
 const validate = async function (decoded, request) {
     if (decoded.name == 123) {

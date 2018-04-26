@@ -1,4 +1,5 @@
 const jwt = require('jsonwebtoken');
+const Joi = require('joi');
 const config = require('../config/config');
 const _privateKey = config.key.privateKey;
 const _tokenExpiration = config.key.tokenExpiration;
@@ -6,7 +7,12 @@ const _tokenExpiration = config.key.tokenExpiration;
 let index = {
     method: 'GET',
     path: '/',
-    config: {auth: false},
+    config: {
+        auth: false,
+        description: 'Get todo',
+        notes: 'Returns a todo item by the id passed in the path',
+        tags: ['api']
+    },
     handler: function (request, h) {
 
         //jwt生成token

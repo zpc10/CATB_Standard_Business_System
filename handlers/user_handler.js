@@ -10,27 +10,25 @@ async function get_user(request, h) {
       if (!id) {
          values=sys_user_controllers.getByID(id);
       } else {*/
-    let response = h.response();
-    await user_service.get_user_all().then((data) => {
 
-        const token = jwt.sign({
-            name: 123
-        }, _privateKey, {
-            expiresIn: _tokenExpiration //秒到期时间
-        });
 
-        response = h.response(data);
-        response.header("token", token);
+    values = await user_service.get_user_all();
 
-    }, (error) => {
-        response=null;
+    const token = jwt.sign({
+        name: 123
+    }, _privateKey, {
+        expiresIn: _tokenExpiration //秒到期时间
     });
+
+    const response = h.response(values);
+    response.header("token", token);
+
 
     return response;
 
 }
 
 
-module.exports={
-    get_user:get_user
+module.exports = {
+    get_user: get_user
 };

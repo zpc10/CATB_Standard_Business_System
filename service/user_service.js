@@ -22,9 +22,11 @@ function get_user_by_id(_id) {
 }
 
 
-function get_user_all() {
+async function get_user_all() {
 
-    return new Promise((resolve, reject) => {
+    let users;
+    //创建一个promise实例对象
+    let promise = new Promise((resolve, reject) => {
         //初始化promise的状态为pending---->初始化状态
         //启动异步任务
         user_model.find({}, function (err, doc) {
@@ -40,6 +42,14 @@ function get_user_all() {
         });
 
     });
+  await promise.then((data) => {
+      users=data;
+
+    }, (error) => {
+        users=null;
+    });
+
+    return users;
 
 }
 

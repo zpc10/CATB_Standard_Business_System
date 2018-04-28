@@ -19,13 +19,14 @@
   "homepage": "https://github.com/zpc10/CATB_Standard_Business_System#readme",
   "dependencies": {
     "hapi": "^17.3.1",
-    "hapi-auth-cookie": "^8.1.0",
     "hapi-auth-jwt2": "^8.1.0",
+    "hapi-server-session": "^4.2.1",
     "hapi-swagger": "^9.1.1",
     "inert": "^5.1.0",
     "joi": "^13.2.0",
     "jsonwebtoken": "^8.2.1",
     "mongoose": "^5.0.16",
+    "q": "^1.5.1",
     "vision": "^5.3.2"
   }
 }

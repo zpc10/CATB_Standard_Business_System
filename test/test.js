@@ -1,17 +1,33 @@
-//创建一个promise实例对象
-let promise = new Promise((resolve, reject) => {
-    //初始化promise的状态为pending---->初始化状态
-    console.log('1111');//同步执行
-    //启动异步任务
-    setTimeout(function () {
-        console.log('3333');
-        resolve('atguigu.com');//修改promise的状态pending---->fullfilled（成功状态）
-        //reject('xxxx');//修改promise的状态pending----->rejected(失败状态)
-    },6000)
-});
-promise.then((data) => {
-    console.log('成功了。。。' + data);
-}, (error) => {
-    console.log('失败了' + error);
-});
-console.log('2222');
+'use strict';
+
+const hapi = require('hapi');
+
+const main = async () => {
+    const server = new hapi.Server({
+        host: 'localhost',
+        address: '127.0.0.1',
+        port: 8000,
+    });
+
+    await server.register({
+        plugin: require('hapi-server-session'),
+        options: {
+            cookie: {
+                isSecure: false, // never set to false in production
+            },
+        },
+    });
+
+    server.route({
+        method: 'GET',
+        path: '/',
+        handler: (request, h) => {
+            request.session.views = request.session.views + 1 || 1;
+            return 'Views: ' + request.session.views;
+        },
+    });
+
+    await server.start();
+};
+
+main().catch(console.error);

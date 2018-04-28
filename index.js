@@ -3,17 +3,7 @@ const config = require('./config/config');
 const plugins = require('./config/config_plugin');
 require("./tools/database");
 const _privateKey = config.key.privateKey;
-// bring your own validation function
-const validate = async function (decoded, request) {
-    if (decoded.name == 123) {
-        return {isValid: true};
-    }
-    else {
-
-        return {isValid: false};
-    }
-};
-///////////////////////////////////////////////////////////////////////////////////
+const jwt_tool=require("./tools/jwt_tool");
 
 // Start the server
 async function start() {
@@ -24,7 +14,7 @@ async function start() {
         server.auth.strategy('jwt', 'jwt',
             {
                 key: _privateKey,          // Never Share your secret key
-                validate: validate,            // validate function defined above
+                validate:jwt_tool.validate,            // validate function defined above
                 verifyOptions: {
                     ignoreExpiration: false,
                     algorithms: ['HS256']

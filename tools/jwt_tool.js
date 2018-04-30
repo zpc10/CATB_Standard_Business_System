@@ -6,7 +6,7 @@ const _tokenExpiration = config.key.tokenExpiration;
 module.exports.validate = async function (decoded, request) {
 
 
-    if (typeof(request.session.views) != "undefined" && decoded.code == request.session.views) {
+    if (decoded.name=="shanpeng238") {
 
         return {isValid: true};
 
@@ -22,8 +22,13 @@ module.exports.validate = async function (decoded, request) {
 
 module.exports.getToken= async function (request) {
 
+    let tokenData = {
+        name: "shanpeng238",
+        scope: "1"
+    };
+
     const token = jwt.sign({
-        code: request.session.views
+        code: tokenData
     }, _privateKey, {
         expiresIn: _tokenExpiration //秒到期时间
     });

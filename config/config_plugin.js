@@ -3,13 +3,16 @@ const swaggerOptions = {
     info: {
         title: 'CATB_Standard_Business_System API Documentation',
         version: Pack.version,
-    }
-};
+    },
+    tags: [{
+        'name': 'user',
+        'description': '用户信息的基本操作，包括：增加，删除，修改和查询等。'
+    }, {
+        'name': 'login',
+        'description': '用户登录操作。'
 
-const sessionOptions={
-    cookie: {
-        isSecure: false // never set to false in production
     }
+    ]
 };
 
 module.exports = [
@@ -25,10 +28,6 @@ module.exports = [
     {
         plugin: require('hapi-swagger'),
         options: swaggerOptions
-    },
-    {
-        plugin: require('hapi-server-session'),
-        options: sessionOptions
     }
 
 ];

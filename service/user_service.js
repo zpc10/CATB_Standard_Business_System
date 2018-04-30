@@ -1,13 +1,14 @@
+var Q = require('q');
 let user_model = require("../models/user_model");
 let Result = require("../models/result");
-var Q = require('q');
+
 
 async function get_user_by_id(id) {
     let result = {};
     let deferred = Q.defer();
-    user_model.findById("5ae14b6c6072fd1c0e482ad2", function (err, doc) {
-        if (!err) {
+    user_model.findById(id, function (err, doc) {
 
+        if (!err) {
 
             deferred.resolve(doc);
 
@@ -20,9 +21,16 @@ async function get_user_by_id(id) {
 
     await deferred.promise.then((data) => {
 
-        result = new Result(1, null, data);
+        result = new Result(1, [], data);
 
     }, (error) => {
+
+        let wrongs = [];
+        let wrong = {kye: "system", description: '用户不存在。'};
+
+        wrongs.push(wrong);
+
+        result = new Result(0, wrongs, {});
 
     });
 
@@ -49,9 +57,16 @@ async function get_user_all() {
 
     await deferred.promise.then((data) => {
 
-        result = new Result(1, null, data);
+        result = new Result(1, [], data);
 
     }, (error) => {
+
+        let wrongs = [];
+        let wrong = {kye: "system", description: '系统内部错误。'};
+
+        wrongs.push(wrong);
+
+        result = new Result(0, wrongs, []);
 
     });
 
@@ -63,35 +78,81 @@ async function create_user(user) {
 
     let result = {};
     let deferred = Q.defer();
-    user_model.create(user, function (err, data) {
+    let userExist = true;
+
+    user_model.findOne({CODE: user.CODE}, function (err, doc) {
         if (!err) {
-
-            deferred.resolve(data);
-
+            deferred.resolve(doc);
         } else {
             deferred.reject(err);
         }
     });
 
+
     await deferred.promise.then((data) => {
 
+        if (data == null) {
 
-        result = new Result(1, null, data);
+            userExist = false;
 
+        } else {
+            let wrongs = [];
+            let wrong = {kye: "CODE", description: '账户已存在。'};
+            wrongs.push(wrong);
+            result = new Result(0, wrongs, {});
+        }
     }, (error) => {
 
+        let wrongs = [];
+        let wrong = {kye: "system", description: '系统内部错误。'};
+        wrongs.push(wrong);
+        result = new Result(0, wrongs, {});
+
     });
+
+    if (!userExist) {
+
+        deferred = Q.defer();
+
+        user.CREATE_TIME = new Date();
+        user_model.create(user, function (err, data) {
+            if (!err) {
+
+                deferred.resolve(data);
+
+            } else {
+
+                deferred.reject(err);
+            }
+        });
+
+        await deferred.promise.then((data) => {
+
+            result = new Result(1, [], data);
+
+        }, (error) => {
+
+            let wrongs = [];
+            let wrong = {kye: "system", description: '系统内部错误。'};
+            wrongs.push(wrong);
+            result = new Result(0, wrongs, {});
+
+        });
+
+
+    }
 
     return result;
 
 }
 
-async function update_user(id,user) {
+async function update_user(id, user) {
 
     let result = {};
     let deferred = Q.defer();
+    let updateok = false;
 
-    user_model.updateOne({_id:id},{$set:user}, function (err, data) {
+    user_model.updateOne({_id: id}, {$set: user}, function (err, data) {
         if (!err) {
 
             deferred.resolve(data);
@@ -103,12 +164,52 @@ async function update_user(id,user) {
 
     await deferred.promise.then((data) => {
 
+        //result = new Result(1, [], data);
 
-        result = new Result(1, null, data);
+        updateok = true;
 
     }, (error) => {
+        let wrongs = [];
+        let wrong = {kye: "system", description: '系统内部错误。'};
 
+        wrongs.push(wrong);
+
+        result = new Result(0, wrongs, {});
     });
+
+
+    if (updateok) {
+        deferred = Q.defer();
+
+        user_model.findById(id, function (err, doc) {
+
+            if (!err) {
+
+                deferred.resolve(doc);
+
+            } else {
+
+                deferred.reject(err);
+            }
+        });
+
+
+        await deferred.promise.then((data) => {
+
+            result = new Result(1, [], data);
+
+        }, (error) => {
+
+            let wrongs = [];
+            let wrong = {kye: "system", description: '用户不存在。'};
+
+            wrongs.push(wrong);
+
+            result = new Result(0, wrongs, {});
+
+        });
+
+    }
 
     return result;
 
@@ -119,7 +220,7 @@ async function delete_user(id) {
     let result = {};
     let deferred = Q.defer();
 
-    user_model.remove({_id:id}, function (err, data) {
+    user_model.remove({_id: id}, function (err, data) {
         if (!err) {
 
             deferred.resolve(data);
@@ -132,10 +233,15 @@ async function delete_user(id) {
     await deferred.promise.then((data) => {
 
 
-        result = new Result(1, null, null);
+        result = new Result(1, [], {});
 
     }, (error) => {
+        let wrongs = [];
+        let wrong = {kye: "system", description: '系统内部错误。'};
 
+        wrongs.push(wrong);
+
+        result = new Result(0, wrongs, {});
     });
 
     return result;
@@ -143,12 +249,11 @@ async function delete_user(id) {
 }
 
 
-
-async function login_user(code,password) {
+async function login_user(code, password) {
 
     let result = {};
     let deferred = Q.defer();
-    user_model.findOne({CODE:code,PASSWORD:password}, function (err, doc) {
+    user_model.findOne({CODE: code, PASSWORD: password}, function (err, doc) {
         if (!err) {
 
             deferred.resolve(doc);
@@ -162,20 +267,26 @@ async function login_user(code,password) {
 
     await deferred.promise.then((data) => {
 
-        if((JSON.stringify(data) == "{}")){
+        if (data==null) {
 
             let wrongs = [{kye: "login", description: '帐号或者密码错误'}];
 
-            result = new Result(0, wrongs, null);
+            result = new Result(0, wrongs, {});
 
-        }else{
+        } else {
 
-            result = new Result(1, null, data);
+            result = new Result(1, [], data);
         }
 
 
-
     }, (error) => {
+
+        let wrongs = [];
+        let wrong = {kye: "system", description: '系统内部错误。'};
+
+        wrongs.push(wrong);
+
+        result = new Result(0, wrongs, {});
 
     });
 
@@ -188,8 +299,8 @@ module.exports = {
     create_user: create_user,
     get_user_all: get_user_all,
     get_user_by_id: get_user_by_id,
-    update_user:update_user,
-    delete_user:delete_user,
-    login_user:login_user
+    update_user: update_user,
+    delete_user: delete_user,
+    login_user: login_user
 
 };

@@ -1,74 +1,41 @@
-var Q = require('q');
 let user_model = require("../models/user_model");
 let Result = require("../models/result");
 
-
 async function get_user_by_id(id) {
     let result = {};
-    let deferred = Q.defer();
-    user_model.findById(id, function (err, doc) {
 
-        if (!err) {
+    try {
 
-            deferred.resolve(doc);
+        let doc = await user_model.findById(id);
+        result = new Result(1, [], doc);
 
-        } else {
-
-            deferred.reject(err);
-        }
-    });
-
-
-    await deferred.promise.then((data) => {
-
-        result = new Result(1, [], data);
-
-    }, (error) => {
+    } catch (e) {
 
         let wrongs = [];
-        let wrong = {kye: "system", description: '用户不存在。'};
-
+        let wrong = {kye: "user", description: '用户不存在。'};
         wrongs.push(wrong);
-
         result = new Result(0, wrongs, {});
 
-    });
+    }
 
     return result;
 
 }
 
-
 async function get_user_all() {
 
     let result = {};
-    let deferred = Q.defer();
-    user_model.find({}, function (err, doc) {
-        if (!err) {
 
-            deferred.resolve(doc);
+    try {
+        let docs = await user_model.find({});
+        result = new Result(1, [], docs);
 
-        } else {
-
-            deferred.reject(err);
-        }
-    });
-
-
-    await deferred.promise.then((data) => {
-
-        result = new Result(1, [], data);
-
-    }, (error) => {
-
+    } catch (e) {
         let wrongs = [];
         let wrong = {kye: "system", description: '系统内部错误。'};
-
         wrongs.push(wrong);
-
         result = new Result(0, wrongs, []);
-
-    });
+    }
 
     return result;
 
@@ -77,69 +44,32 @@ async function get_user_all() {
 async function create_user(user) {
 
     let result = {};
-    let deferred = Q.defer();
-    let userExist = true;
+    try {
+        let doc = await user_model.findOne({CODE: user.CODE});
+        if (doc == null) {
 
-    user_model.findOne({CODE: user.CODE}, function (err, doc) {
-        if (!err) {
-            deferred.resolve(doc);
-        } else {
-            deferred.reject(err);
-        }
-    });
-
-
-    await deferred.promise.then((data) => {
-
-        if (data == null) {
-
-            userExist = false;
+            try {
+                user.CREATE_TIME = new Date();
+                doc = await  user_model.create(user);
+                result = new Result(1, [], doc);
+            } catch (e) {
+                let wrongs = [];
+                let wrong = {kye: "system", description: '系统内部错误。'};
+                wrongs.push(wrong);
+                result = new Result(0, wrongs, {});
+            }
 
         } else {
             let wrongs = [];
-            let wrong = {kye: "CODE", description: '账户已存在。'};
+            let wrong = {kye: "user", description: '账户已存在。'};
             wrongs.push(wrong);
             result = new Result(0, wrongs, {});
         }
-    }, (error) => {
-
+    } catch (e) {
         let wrongs = [];
         let wrong = {kye: "system", description: '系统内部错误。'};
         wrongs.push(wrong);
         result = new Result(0, wrongs, {});
-
-    });
-
-    if (!userExist) {
-
-        deferred = Q.defer();
-
-        user.CREATE_TIME = new Date();
-        user_model.create(user, function (err, data) {
-            if (!err) {
-
-                deferred.resolve(data);
-
-            } else {
-
-                deferred.reject(err);
-            }
-        });
-
-        await deferred.promise.then((data) => {
-
-            result = new Result(1, [], data);
-
-        }, (error) => {
-
-            let wrongs = [];
-            let wrong = {kye: "system", description: '系统内部错误。'};
-            wrongs.push(wrong);
-            result = new Result(0, wrongs, {});
-
-        });
-
-
     }
 
     return result;
@@ -149,65 +79,28 @@ async function create_user(user) {
 async function update_user(id, user) {
 
     let result = {};
-    let deferred = Q.defer();
-    let updateok = false;
 
-    user_model.updateOne({_id: id}, {$set: user}, function (err, data) {
-        if (!err) {
+    try {
 
-            deferred.resolve(data);
+        await user_model.updateOne({_id: id}, {$set: user});
 
-        } else {
-            deferred.reject(err);
-        }
-    });
+        try {
+            let doc = await user_model.findById(id);
+            result = new Result(1, [], doc);
 
-    await deferred.promise.then((data) => {
-
-        //result = new Result(1, [], data);
-
-        updateok = true;
-
-    }, (error) => {
-        let wrongs = [];
-        let wrong = {kye: "system", description: '系统内部错误。'};
-
-        wrongs.push(wrong);
-
-        result = new Result(0, wrongs, {});
-    });
-
-
-    if (updateok) {
-        deferred = Q.defer();
-
-        user_model.findById(id, function (err, doc) {
-
-            if (!err) {
-
-                deferred.resolve(doc);
-
-            } else {
-
-                deferred.reject(err);
-            }
-        });
-
-
-        await deferred.promise.then((data) => {
-
-            result = new Result(1, [], data);
-
-        }, (error) => {
-
+        } catch (e) {
             let wrongs = [];
-            let wrong = {kye: "system", description: '用户不存在。'};
-
+            let wrong = {kye: "system", description: '系统内部错误。'};
             wrongs.push(wrong);
-
             result = new Result(0, wrongs, {});
+        }
 
-        });
+    } catch (e) {
+
+        let wrongs = [];
+        let wrong = {kye: "user", description: '用户不存在。'};
+        wrongs.push(wrong);
+        result = new Result(0, wrongs, {});
 
     }
 
@@ -218,31 +111,16 @@ async function update_user(id, user) {
 async function delete_user(id) {
 
     let result = {};
-    let deferred = Q.defer();
 
-    user_model.remove({_id: id}, function (err, data) {
-        if (!err) {
-
-            deferred.resolve(data);
-
-        } else {
-            deferred.reject(err);
-        }
-    });
-
-    await deferred.promise.then((data) => {
-
-
+    try {
+        await user_model.remove({_id: id});
         result = new Result(1, [], {});
-
-    }, (error) => {
+    } catch (e) {
         let wrongs = [];
-        let wrong = {kye: "system", description: '系统内部错误。'};
-
+        let wrong = {kye: "user", description: '用户不存在。'};
         wrongs.push(wrong);
-
         result = new Result(0, wrongs, {});
-    });
+    }
 
     return result;
 
@@ -253,24 +131,12 @@ async function login_user(code, password) {
 
     let result = {};
     let deferred = Q.defer();
-    user_model.findOne({CODE: code, PASSWORD: password}, function (err, doc) {
-        if (!err) {
 
-            deferred.resolve(doc);
-
-        } else {
-
-            deferred.reject(err);
-        }
-    });
-
-
-    await deferred.promise.then((data) => {
-
-        if (data==null) {
+    try {
+        let doc = user_model.findOne({CODE: code, PASSWORD: password});
+        if (data == null) {
 
             let wrongs = [{kye: "login", description: '帐号或者密码错误'}];
-
             result = new Result(0, wrongs, {});
 
         } else {
@@ -278,18 +144,12 @@ async function login_user(code, password) {
             result = new Result(1, [], data);
         }
 
-
-    }, (error) => {
-
+    } catch (e) {
         let wrongs = [];
         let wrong = {kye: "system", description: '系统内部错误。'};
-
         wrongs.push(wrong);
-
         result = new Result(0, wrongs, {});
-
-    });
-
+    }
     return result;
 
 }

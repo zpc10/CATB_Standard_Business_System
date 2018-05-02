@@ -10,7 +10,6 @@ async function get_user_all(request, h) {
 
     const response = h.response(JSON.stringify(result));
 
-
     response.header("token", token);
 
     return response;
@@ -61,9 +60,6 @@ async function delete_user(request, h) {
     let id = request.params.id;
 
     result = await user_service.delete_user(id);
-    
-    console.log(result);
-
     const token = await jwt_tool.getToken(request);
     const response = h.response(JSON.stringify(result));
     response.header("token", token);

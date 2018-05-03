@@ -1,18 +1,18 @@
-let cash_model = require("../models/cash_model");
+let org_model = require("../models/org_model");
 let Result = require("../models/result");
 
-async function get_cash_by_id(id) {
+async function get_org_by_id(id) {
     let result = {};
 
     try {
 
-        let doc = await cash_model.findById(id);
+        let doc = await org_model.findById(id);
         result = new Result(1, [], doc);
 
     } catch (e) {
 
         let wrongs = [];
-        let wrong = {kye: "cash", description: '现金账户不存在。'};
+        let wrong = {kye: "org", description: '组织不存在。'};
         wrongs.push(wrong);
         result = new Result(0, wrongs, {});
 
@@ -22,12 +22,12 @@ async function get_cash_by_id(id) {
 
 }
 
-async function get_cash_all() {
+async function get_org_all() {
 
     let result = {};
 
     try {
-        let docs = await cash_model.find({});
+        let docs = await org_model.find({});
         result = new Result(1, [], docs);
 
     } catch (e) {
@@ -41,13 +41,13 @@ async function get_cash_all() {
 
 }
 
-async function create_cash(cash) {
+async function create_org(org) {
 
     let result = {};
     try {
 
-        cash.CREATE_TIME = new Date();
-        doc = await  cash_model.create(cash);
+        org.CREATE_TIME = new Date();
+        doc = await  org_model.create(org);
         result = new Result(1, [], doc);
 
     } catch (e) {
@@ -61,16 +61,16 @@ async function create_cash(cash) {
 
 }
 
-async function update_cash(id, cash) {
+async function update_org(id, org) {
 
     let result = {};
 
     try {
 
-        await cash_model.updateOne({_id: id}, {$set: cash});
+        await org_model.updateOne({_id: id}, {$set: org});
 
         try {
-            let doc = await cash_model.findById(id);
+            let doc = await org_model.findById(id);
             result = new Result(1, [], doc);
 
         } catch (e) {
@@ -83,7 +83,7 @@ async function update_cash(id, cash) {
     } catch (e) {
 
         let wrongs = [];
-        let wrong = {kye: "cash", description: '现金账户不存在。'};
+        let wrong = {kye: "org", description: '组织不存在。'};
         wrongs.push(wrong);
         result = new Result(0, wrongs, {});
 
@@ -93,16 +93,16 @@ async function update_cash(id, cash) {
 
 }
 
-async function delete_cash(id) {
+async function delete_org(id) {
 
     let result = {};
 
     try {
-        await cash_model.remove({_id: id});
+        await org_model.remove({_id: id});
         result = new Result(1, [], {});
     } catch (e) {
         let wrongs = [];
-        let wrong = {kye: "cash", description: '现金账户不存在。'};
+        let wrong = {kye: "org", description: '组织不存在。'};
         wrongs.push(wrong);
         result = new Result(0, wrongs, {});
     }
@@ -113,10 +113,10 @@ async function delete_cash(id) {
 
 module.exports = {
 
-    create_cash: create_cash,
-    get_cash_all: get_cash_all,
-    get_cash_by_id: get_cash_by_id,
-    update_cash: update_cash,
-    delete_cash: delete_cash
+    create_org: create_org,
+    get_org_all: get_org_all,
+    get_org_by_id: get_org_by_id,
+    update_org: update_org,
+    delete_org: delete_org
 
 };

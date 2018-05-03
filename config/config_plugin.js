@@ -11,6 +11,22 @@ const swaggerOptions = {
         'name': 'login',
         'description': '用户登录操作。'
 
+    }, {
+        'name': 'cash',
+        'description': '现金账户信息的基本操作，包括：增加，删除，修改和查询等。'
+
+    }, {
+        'name': 'coins',
+        'description': '积分账户信息的基本操作，包括：增加，删除，修改和查询等。'
+
+    }, {
+        'name': 'org',
+        'description': '组织信息的基本操作，包括：增加，删除，修改和查询等。'
+
+    }, {
+        'name': 'resource',
+        'description': '资源信息的基本操作，包括：增加，删除，修改和查询等。'
+
     }
     ]
 };

@@ -1,1 +1,16 @@
-let a = {"status":1,"wrongs":[],"data":[{"STATUS":"disable","_id":"5ae9b98c3a6c4411cd05a582","CODE":"ww","NAME":"dsf","FIRSTNAME":"sdf","LASTNAME":"sdf","PASSWORD":"sf","EMAIL":"sdf@126.com","PHONE":"dsfs","CREATE_TIME":"2018-05-02T13:13:48.652Z","__v":0}]}
+function getSomething() {
+    return "something";
+}
+
+async function testAsync() {
+    return Promise.resolve("hello async");
+}
+
+async function test() {
+    const v1 = await getSomething();
+    const v2 = await testAsync();
+    console.log(v1, v2);
+}
+
+test();
+testAsync();

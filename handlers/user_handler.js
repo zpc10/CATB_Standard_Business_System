@@ -1,6 +1,5 @@
 const jwt_tool = require("../tools/jwt_tool");
 const user_service = require("../service/user_service");
-const Joi = require('joi');
 
 async function get_user_all(request, h) {
 

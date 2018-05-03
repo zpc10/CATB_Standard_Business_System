@@ -130,18 +130,18 @@ async function delete_user(id) {
 async function login_user(code, password) {
 
     let result = {};
-    let deferred = Q.defer();
 
     try {
+
         let doc = user_model.findOne({CODE: code, PASSWORD: password});
-        if (data == null) {
+        if (doc == null) {
 
             let wrongs = [{kye: "login", description: '帐号或者密码错误'}];
             result = new Result(0, wrongs, {});
 
         } else {
 
-            result = new Result(1, [], data);
+            result = new Result(1, [], doc);
         }
 
     } catch (e) {

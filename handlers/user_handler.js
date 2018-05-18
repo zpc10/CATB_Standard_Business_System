@@ -8,7 +8,7 @@ async function get_user_all(request, h) {
     const token = await jwt_tool.getToken(request);
 
     const response = h.response(JSON.stringify(result));
-
+    response.header("content-type", "application/json; charset=utf-8");
     response.header("token", token);
 
     return response;
@@ -24,6 +24,7 @@ async function get_user_by_id(request, h) {
     const token = await jwt_tool.getToken(request);
 
     const response = h.response(JSON.stringify(result));
+    response.header("content-type", "application/json; charset=utf-8");
     response.header("token", token);
     return response;
 }
@@ -34,6 +35,7 @@ async function create_user(request, h) {
     const result = await user_service.create_user(user);
 
     const response = h.response(JSON.stringify(result));
+    response.header("content-type", "application/json; charset=utf-8");
 
     return response;
 
@@ -49,6 +51,7 @@ async function update_user(request, h) {
 
     const token = await jwt_tool.getToken(request);
     const response = h.response(JSON.stringify(result));
+    response.header("content-type", "application/json; charset=utf-8");
     response.header("token", token);
     return response;
 
@@ -61,6 +64,7 @@ async function delete_user(request, h) {
     result = await user_service.delete_user(id);
     const token = await jwt_tool.getToken(request);
     const response = h.response(JSON.stringify(result));
+    response.header("content-type", "application/json; charset=utf-8");
     response.header("token", token);
     return response;
 
@@ -74,6 +78,7 @@ async function login_user(request, h) {
     result = await user_service.login_user(CODE, PASSWORD);
 
     const response = h.response(JSON.stringify(result));
+    response.header("content-type", "application/json; charset=utf-8");
 
     if (result.status == 1) {
 

@@ -8,7 +8,7 @@ async function get_org_all(request, h) {
     const token = await jwt_tool.getToken(request);
 
     const response = h.response(JSON.stringify(result));
-
+    response.header("content-type", "application/json; charset=utf-8");
     response.header("token", token);
 
     return response;
@@ -24,6 +24,7 @@ async function get_org_by_id(request, h) {
     const token = await jwt_tool.getToken(request);
 
     const response = h.response(JSON.stringify(result));
+    response.header("content-type", "application/json; charset=utf-8");
     response.header("token", token);
     return response;
 }
@@ -32,9 +33,10 @@ async function create_org(request, h) {
     let org = request.payload;
 
     const result = await org_service.create_org(org);
-
+    const token = await jwt_tool.getToken(request);
     const response = h.response(JSON.stringify(result));
-
+    response.header("content-type", "application/json; charset=utf-8");
+    response.header("token", token);
     return response;
 
 }
@@ -49,6 +51,7 @@ async function update_org(request, h) {
 
     const token = await jwt_tool.getToken(request);
     const response = h.response(JSON.stringify(result));
+    response.header("content-type", "application/json; charset=utf-8");
     response.header("token", token);
     return response;
 
@@ -61,6 +64,7 @@ async function delete_org(request, h) {
     result = await org_service.delete_org(id);
     const token = await jwt_tool.getToken(request);
     const response = h.response(JSON.stringify(result));
+    response.header("content-type", "application/json; charset=utf-8");
     response.header("token", token);
     return response;
 

@@ -8,7 +8,7 @@ async function get_cash_all(request, h) {
     const token = await jwt_tool.getToken(request);
 
     const response = h.response(JSON.stringify(result));
-
+    response.header("content-type", "application/json; charset=utf-8");
     response.header("token", token);
 
     return response;
@@ -24,6 +24,7 @@ async function get_cash_by_id(request, h) {
     const token = await jwt_tool.getToken(request);
 
     const response = h.response(JSON.stringify(result));
+    response.header("content-type", "application/json; charset=utf-8");
     response.header("token", token);
     return response;
 }
@@ -32,9 +33,12 @@ async function create_cash(request, h) {
     let cash = request.payload;
 
     const result = await cash_service.create_cash(cash);
+    const token = await jwt_tool.getToken(request);
 
     const response = h.response(JSON.stringify(result));
 
+    response.header("content-type", "application/json; charset=utf-8");
+    response.header("token", token);
     return response;
 
 }
@@ -49,6 +53,7 @@ async function update_cash(request, h) {
 
     const token = await jwt_tool.getToken(request);
     const response = h.response(JSON.stringify(result));
+    response.header("content-type", "application/json; charset=utf-8");
     response.header("token", token);
     return response;
 
@@ -61,6 +66,7 @@ async function delete_cash(request, h) {
     result = await cash_service.delete_cash(id);
     const token = await jwt_tool.getToken(request);
     const response = h.response(JSON.stringify(result));
+    response.header("content-type", "application/json; charset=utf-8");
     response.header("token", token);
     return response;
 

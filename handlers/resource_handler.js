@@ -9,6 +9,8 @@ async function get_resource_all(request, h) {
 
     const response = h.response(JSON.stringify(result));
 
+
+    response.header("content-type", "application/json; charset=utf-8");
     response.header("token", token);
 
     return response;
@@ -24,6 +26,7 @@ async function get_resource_by_id(request, h) {
     const token = await jwt_tool.getToken(request);
 
     const response = h.response(JSON.stringify(result));
+    response.header("content-type", "application/json; charset=utf-8");
     response.header("token", token);
     return response;
 }
@@ -32,9 +35,10 @@ async function create_resource(request, h) {
     let resource = request.payload;
 
     const result = await resource_service.create_resource(resource);
-
+    const token = await jwt_tool.getToken(request);
     const response = h.response(JSON.stringify(result));
-
+    response.header("content-type", "application/json; charset=utf-8");
+    response.header("token", token);
     return response;
 
 }
@@ -49,6 +53,7 @@ async function update_resource(request, h) {
 
     const token = await jwt_tool.getToken(request);
     const response = h.response(JSON.stringify(result));
+    response.header("content-type", "application/json; charset=utf-8");
     response.header("token", token);
     return response;
 
@@ -61,6 +66,7 @@ async function delete_resource(request, h) {
     result = await resource_service.delete_resource(id);
     const token = await jwt_tool.getToken(request);
     const response = h.response(JSON.stringify(result));
+    response.header("content-type", "application/json; charset=utf-8");
     response.header("token", token);
     return response;
 
